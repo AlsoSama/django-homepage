@@ -1,0 +1,71 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}学术论文 - {% if personal_info %}{{ personal_info.name }}{% else %}Portfolio{% endif %}{% endblock %}
+
+{% block content %}
+<!-- 页面头部 -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-title">学术论文</h1>
+        <p class="page-subtitle">研究成果与学术贡献</p>
+    </div>
+</section>
+
+<!-- 论文列表 -->
+<section class="papers-section">
+    <div class="container">
+        <div class="papers-list">
+            {% for paper in papers %}
+            <div class="paper-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="paper-content">
+                    <div class="paper-header">
+                        <h3 class="paper-title">{{ paper.title }}</h3>
+                        <div class="paper-meta">
+                            <span class="paper-date">{{ paper.publication_date|date:"Y年m月" }}</span>
+                            {% if paper.is_published %}
+                            <span class="paper-status published">已发表</span>
+                            {% else %}
+                            <span class="paper-status draft">草稿</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="paper-details">
+                        <p class="paper-authors">
+                            <i class="fas fa-users"></i>
+                            {{ paper.authors }}
+                        </p>
+                        <p class="paper-journal">
+                            <i class="fas fa-book"></i>
+                            {{ paper.journal }}
+                        </p>
+                    </div>
+                    <div class="paper-abstract">
+                        <h4>摘要</h4>
+                        <p>{{ paper.abstract }}</p>
+                    </div>
+                    <div class="paper-actions">
+                        {% if paper.doi %}
+                        <a href="{{ paper.doi }}" class="btn btn-outline" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> DOI链接
+                        </a>
+                        {% endif %}
+                        {% if paper.pdf_file %}
+                        <a href="{{ paper.pdf_file.url }}" class="btn btn-primary" target="_blank">
+                            <i class="fas fa-file-pdf"></i> 下载PDF
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>暂无论文</h3>
+                <p>学术成果正在整理中，敬请期待</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

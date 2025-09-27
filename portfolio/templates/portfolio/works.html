@@ -1,0 +1,84 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}作品展示 - {% if personal_info %}{{ personal_info.name }}{% else %}Portfolio{% endif %}{% endblock %}
+
+{% block content %}
+<!-- 页面头部 -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-title">我的作品</h1>
+        <p class="page-subtitle">创作与设计的完美结合</p>
+    </div>
+</section>
+
+<!-- 作品筛选 -->
+<section class="works-filter">
+    <div class="container">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            {% for category in categories %}
+            <button class="filter-btn" data-filter="{{ category }}">{{ category }}</button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- 作品网格 -->
+<section class="works-grid-section">
+    <div class="container">
+        <div class="works-grid">
+            {% for work in works %}
+            <div class="work-card" data-category="{{ work.category }}">
+                <div class="work-image">
+                    <img src="{{ work.image.url }}" alt="{{ work.title }}">
+                    <div class="work-overlay">
+                        <div class="work-info">
+                            <h3>{{ work.title }}</h3>
+                            <p>{{ work.description|truncatechars:100 }}</p>
+                            <span class="work-category">{{ work.category }}</span>
+                            <span class="work-date">{{ work.created_date|date:"Y年m月" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-palette"></i>
+                <h3>暂无作品</h3>
+                <p>作品正在准备中，敬请期待</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const workCards = document.querySelectorAll('.work-card');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            
+            // 更新按钮状态
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // 筛选作品
+            workCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.5s ease';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

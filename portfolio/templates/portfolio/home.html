@@ -1,0 +1,189 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- 英雄区域 -->
+<section class="hero" id="hero">
+    <div class="hero-background">
+        {% if personal_info and personal_info.background_image %}
+        <img src="{{ personal_info.background_image.url }}" alt="Background" class="hero-bg-image">
+        {% endif %}
+        <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1 class="hero-title">
+                <span class="title-line">{% if personal_info %}{{ personal_info.name }}{% else %}Your Name{% endif %}</span>
+                <span class="title-line">{{ personal_info.title|default:"Your Title" }}</span>
+            </h1>
+            <p class="hero-description">
+                {% if personal_info %}{{ personal_info.bio }}{% else %}Welcome to my personal website{% endif %}
+            </p>
+            <div class="hero-buttons">
+                <a href="{% url 'portfolio:works' %}" class="btn btn-primary">查看作品</a>
+                <a href="{% url 'portfolio:contact' %}" class="btn btn-secondary">联系我</a>
+            </div>
+        </div>
+        {% if personal_info and personal_info.avatar %}
+        <div class="hero-image">
+            <img src="{{ personal_info.avatar.url }}" alt="{% if personal_info %}{{ personal_info.name }}{% else %}Profile{% endif %}" class="profile-image">
+        </div>
+        {% endif %}
+    </div>
+    <div class="scroll-indicator">
+        <div class="scroll-arrow"></div>
+    </div>
+</section>
+
+<!-- 精选作品 -->
+{% if featured_works %}
+<section class="featured-works" id="featured-works">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">精选作品</h2>
+            <p class="section-subtitle">展示我的创作成果</p>
+        </div>
+        <div class="works-grid">
+            {% for work in featured_works %}
+            <div class="work-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="work-image">
+                    <img src="{{ work.image.url }}" alt="{{ work.title }}">
+                    <div class="work-overlay">
+                        <div class="work-info">
+                            <h3>{{ work.title }}</h3>
+                            <p>{{ work.description|truncatechars:100 }}</p>
+                            <span class="work-category">{{ work.category }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-footer">
+            <a href="{% url 'portfolio:works' %}" class="btn btn-outline">查看所有作品</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 精选项目 -->
+{% if featured_projects %}
+<section class="featured-projects" id="featured-projects">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">精选项目</h2>
+            <p class="section-subtitle">我的技术项目展示</p>
+        </div>
+        <div class="projects-grid">
+            {% for project in featured_projects %}
+            <div class="project-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="project-image">
+                    <img src="{{ project.image.url }}" alt="{{ project.name }}">
+                </div>
+                <div class="project-content">
+                    <h3>{{ project.name }}</h3>
+                    <p>{{ project.description|truncatechars:120 }}</p>
+                    <div class="project-tech">
+                        {% for tech in project.tech_list %}
+                        <span class="tech-tag">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="project-links">
+                        {% if project.github_url %}
+                        <a href="{{ project.github_url }}" class="project-link" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        {% endif %}
+                        {% if project.demo_url %}
+                        <a href="{{ project.demo_url }}" class="project-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> Demo
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-footer">
+            <a href="{% url 'portfolio:projects' %}" class="btn btn-outline">查看所有项目</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 最新论文 -->
+{% if recent_papers %}
+<section class="recent-papers" id="recent-papers">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">最新论文</h2>
+            <p class="section-subtitle">我的学术研究成果</p>
+        </div>
+        <div class="papers-list">
+            {% for paper in recent_papers %}
+            <div class="paper-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="paper-content">
+                    <h3>{{ paper.title }}</h3>
+                    <p class="paper-authors">{{ paper.authors }}</p>
+                    <p class="paper-journal">{{ paper.journal }}</p>
+                    <p class="paper-date">{{ paper.publication_date|date:"Y年m月" }}</p>
+                    <p class="paper-abstract">{{ paper.abstract|truncatechars:200 }}</p>
+                </div>
+                <div class="paper-actions">
+                    {% if paper.doi %}
+                    <a href="{{ paper.doi }}" class="btn btn-small" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> DOI
+                    </a>
+                    {% endif %}
+                    {% if paper.pdf_file %}
+                    <a href="{{ paper.pdf_file.url }}" class="btn btn-small" target="_blank">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-footer">
+            <a href="{% url 'portfolio:papers' %}" class="btn btn-outline">查看所有论文</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 技能展示 -->
+{% if skills %}
+<section class="skills" id="skills">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">技能专长</h2>
+            <p class="section-subtitle">我的技术能力</p>
+        </div>
+        <div class="skills-grid">
+            {% for skill in skills %}
+            <div class="skill-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:50 }}">
+                <div class="skill-info">
+                    <h4>{{ skill.name }}</h4>
+                    <span class="skill-category">{{ skill.category }}</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" data-width="{{ skill.level }}%">
+                        <span class="skill-percentage">{{ skill.level }}%</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 联系我 -->
+<section class="contact-cta" id="contact-cta">
+    <div class="cta-content">
+        <h2>让我们开始合作</h2>
+        <p>有项目想法或合作机会？我很乐意与您交流</p>
+        <a href="{% url 'portfolio:contact' %}" class="btn btn-primary btn-large">联系我</a>
+    </div>
+</section>
+{% endblock %}

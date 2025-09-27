@@ -1,0 +1,129 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}关于我 - {% if personal_info %}{{ personal_info.name }}{% else %}Portfolio{% endif %}{% endblock %}
+
+{% block content %}
+<!-- 页面头部 -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-title">关于我</h1>
+        <p class="page-subtitle">了解我的故事与技能</p>
+    </div>
+</section>
+
+<!-- 个人信息 -->
+{% if personal_info %}
+<section class="about-intro">
+    <div class="container">
+        <div class="intro-content">
+            <div class="intro-image">
+                {% if personal_info.avatar %}
+                <img src="{{ personal_info.avatar.url }}" alt="{{ personal_info.name }}" class="profile-image">
+                {% endif %}
+            </div>
+            <div class="intro-text">
+                <h2>{{ personal_info.name }}</h2>
+                <h3>{{ personal_info.title }}</h3>
+                <div class="bio-content">
+                    {{ personal_info.bio|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 教育背景 -->
+{% if education %}
+<section class="education-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">教育背景</h2>
+        </div>
+        <div class="education-timeline">
+            {% for edu in education %}
+            <div class="education-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="education-content">
+                    <div class="education-header">
+                        <h3>{{ edu.degree }}</h3>
+                        <span class="education-period">
+                            {{ edu.start_year }}
+                            {% if edu.end_year %} - {{ edu.end_year }}{% elif edu.is_current %} - 至今{% endif %}
+                        </span>
+                    </div>
+                    <div class="education-details">
+                        <h4>{{ edu.school }}</h4>
+                        <p class="education-major">{{ edu.major }}</p>
+                        {% if edu.description %}
+                        <p class="education-description">{{ edu.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 技能展示 -->
+{% if skills %}
+<section class="skills-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">技能专长</h2>
+        </div>
+        <div class="skills-categories">
+            {% regroup skills by category as skills_by_category %}
+            {% for category in skills_by_category %}
+            <div class="skill-category" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <h3 class="category-title">{{ category.grouper }}</h3>
+                <div class="skills-grid">
+                    {% for skill in category.list %}
+                    <div class="skill-item">
+                        <div class="skill-info">
+                            <h4>{{ skill.name }}</h4>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="{{ skill.level }}%">
+                                <span class="skill-percentage">{{ skill.level }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 联系信息 -->
+{% if contacts %}
+<section class="contact-info">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">联系方式</h2>
+        </div>
+        <div class="contact-grid">
+            {% for contact in contacts %}
+            <div class="contact-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="contact-icon">
+                    <i class="{% if contact.icon %}{{ contact.icon }}{% else %}fas fa-link{% endif %}"></i>
+                </div>
+                <div class="contact-details">
+                    <h4>{{ contact.get_contact_type_display }}</h4>
+                    <a href="{% if contact.contact_type == 'email' %}mailto:{{ contact.value }}{% elif contact.contact_type == 'phone' %}tel:{{ contact.value }}{% else %}{{ contact.value }}{% endif %}" 
+                       class="contact-link">
+                        {{ contact.value }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

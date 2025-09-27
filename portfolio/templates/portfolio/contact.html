@@ -1,0 +1,112 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}联系我 - {% if personal_info %}{{ personal_info.name }}{% else %}Portfolio{% endif %}{% endblock %}
+
+{% block content %}
+<!-- 页面头部 -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-title">联系我</h1>
+        <p class="page-subtitle">让我们开始对话</p>
+    </div>
+</section>
+
+<!-- 联系信息 -->
+<section class="contact-section">
+    <div class="container">
+        <div class="contact-grid">
+            <!-- 联系方式 -->
+            <div class="contact-info-card">
+                <h2>联系方式</h2>
+                <p class="contact-description">有项目想法或合作机会？我很乐意与您交流</p>
+                
+                <div class="contact-methods">
+                    {% for contact in contacts %}
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="{% if contact.icon %}{{ contact.icon }}{% else %}fas fa-link{% endif %}"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>{{ contact.get_contact_type_display }}</h4>
+                            <a href="{% if contact.contact_type == 'email' %}mailto:{{ contact.value }}{% elif contact.contact_type == 'phone' %}tel:{{ contact.value }}{% else %}{{ contact.value }}{% endif %}" 
+                               class="contact-link">
+                                {{ contact.value }}
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <i class="fas fa-envelope"></i>
+                        <h3>暂无联系方式</h3>
+                        <p>联系方式正在更新中</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- 联系表单 -->
+            <div class="contact-form-card">
+                <h2>发送消息</h2>
+                <form class="message-form" id="contact-form">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">主题</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">消息内容</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">发送消息</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 社交媒体 -->
+{% if contacts %}
+<section class="social-section">
+    <div class="container">
+        <h2>关注我</h2>
+        <div class="social-links">
+            {% for contact in contacts %}
+            {% if contact.contact_type in 'github,linkedin,twitter,wechat' %}
+            <a href="{{ contact.value }}" class="social-link" target="_blank">
+                <i class="{% if contact.icon %}{{ contact.icon }}{% else %}fas fa-link{% endif %}"></i>
+                <span>{{ contact.get_contact_type_display }}</span>
+            </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contact-form');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 这里可以添加表单提交逻辑
+        // 例如发送到后端API或使用第三方服务
+        
+        // 显示成功消息
+        alert('消息已发送！我会尽快回复您。');
+        form.reset();
+    });
+});
+</script>
+{% endblock %}
